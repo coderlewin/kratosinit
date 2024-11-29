@@ -1,0 +1,22 @@
+server:
+  http:
+    addr: 0.0.0.0:8888
+    timeout: 5s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 5s
+data:
+  database:
+    driver: mysql
+    source: root:12345678@tcp(127.0.0.1:3306)/gininit?parseTime=True&loc=Local
+    max_open_conns: 10
+    max_idle_conns: 5
+    conn_max_lifetime: 3600s
+  redis:
+    addr: 127.0.0.1:6379
+    password: "123456"
+    db: 0
+    read_timeout: 0.2s
+    write_timeout: 0.2s
+jwt:
+  secret: moyn8y9abnd7q4zkq2m73yw8tu9j5ixm

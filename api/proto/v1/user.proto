@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package v1.user;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/coderlewin/kratosinit/api/proto/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.v1";
+option java_outer_classname = "UserProtoV1";
+
+message IdRequest {
+  int64 id = 1;
+}
+
+message UserVO {
+  int64 id = 1;
+  string nickName = 2;
+  string account = 3;
+  string avatar = 4;
+  string unionId = 5;
+  string mpOpenId = 6;
+  string profile = 7;
+  string role = 8;
+  int64 createTime = 9 [jstype = JS_NUMBER];
+  int64 updateTime = 10 [jstype = JS_NUMBER];
+}
+
+message UserCreateDTO {
+  string nickName = 1;
+  string account = 2;
+  string avatar = 3;
+  string role = 4;
+}
+
+message UserUpdateDTO {
+  int64 id = 1;
+  string nickName = 2;
+  string avatar = 3;
+  string role = 4;
+  string profile = 5;
+}
+
+message UserQueryDTO {
+  int64 current = 1;
+  int64 size = 2;
+  string nickName = 3;
+  string role = 4;
+}
+
+message UserPageVO {
+  int64 total = 1;
+  repeated UserVO list = 2;
+}
+
+service User {
+  rpc FindById (IdRequest) returns (UserVO) {
+    option (google.api.http) = {
+      get: "/v1/users/{id}"
+    };
+  }
+
+  rpc Create (UserCreateDTO) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/users",
+      body: "*"
+    };
+  }
+
+  rpc Delete (IdRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/v1/users/{id}"
+    };
+  }
+
+  rpc Update (UserUpdateDTO) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/v1/users/{id}",
+      body: "*"
+    };
+  }
+
+  rpc PageList (UserQueryDTO) returns (UserPageVO) {
+    option (google.api.http) = {
+      get: "/v1/users",
+    };
+  }
+}

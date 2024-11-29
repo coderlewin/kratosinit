@@ -1,0 +1,269 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /v1/auth/login:
+        post:
+            tags:
+                - Auth
+            operationId: Auth_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.auth.AuthLoginDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.auth.AuthLoginVO'
+    /v1/auth/logout:
+        post:
+            tags:
+                - Auth
+            operationId: Auth_Logout
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /v1/auth/register:
+        post:
+            tags:
+                - Auth
+            operationId: Auth_Register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.auth.AuthRegisterDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /v1/auth/update/mine:
+        post:
+            tags:
+                - Auth
+            operationId: Auth_UpdateMineInfo
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.auth.UpdateMineInfoDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /v1/auth/userInfo:
+        get:
+            tags:
+                - Auth
+            operationId: Auth_LoginUserInfo
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.user.UserVO'
+    /v1/users:
+        get:
+            tags:
+                - User
+            operationId: User_PageList
+            parameters:
+                - name: current
+                  in: query
+                  schema:
+                    type: string
+                - name: size
+                  in: query
+                  schema:
+                    type: string
+                - name: nickName
+                  in: query
+                  schema:
+                    type: string
+                - name: role
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.user.UserPageVO'
+        post:
+            tags:
+                - User
+            operationId: User_Create
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.user.UserCreateDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /v1/users/{id}:
+        get:
+            tags:
+                - User
+            operationId: User_FindById
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/v1.user.UserVO'
+        put:
+            tags:
+                - User
+            operationId: User_Update
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/v1.user.UserUpdateDTO'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+        delete:
+            tags:
+                - User
+            operationId: User_Delete
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+components:
+    schemas:
+        v1.auth.AuthLoginDTO:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+        v1.auth.AuthLoginVO:
+            type: object
+            properties:
+                accessToken:
+                    type: string
+                tokenPrefix:
+                    type: string
+        v1.auth.AuthRegisterDTO:
+            type: object
+            properties:
+                account:
+                    type: string
+                password:
+                    type: string
+                checkPassword:
+                    type: string
+        v1.auth.UpdateMineInfoDTO:
+            type: object
+            properties:
+                nickName:
+                    type: string
+                avatar:
+                    type: string
+                profile:
+                    type: string
+        v1.user.UserCreateDTO:
+            type: object
+            properties:
+                nickName:
+                    type: string
+                account:
+                    type: string
+                avatar:
+                    type: string
+                role:
+                    type: string
+        v1.user.UserPageVO:
+            type: object
+            properties:
+                total:
+                    type: string
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/v1.user.UserVO'
+        v1.user.UserUpdateDTO:
+            type: object
+            properties:
+                id:
+                    type: string
+                nickName:
+                    type: string
+                avatar:
+                    type: string
+                role:
+                    type: string
+                profile:
+                    type: string
+        v1.user.UserVO:
+            type: object
+            properties:
+                id:
+                    type: string
+                nickName:
+                    type: string
+                account:
+                    type: string
+                avatar:
+                    type: string
+                unionId:
+                    type: string
+                mpOpenId:
+                    type: string
+                profile:
+                    type: string
+                role:
+                    type: string
+                createTime:
+                    type: string
+                updateTime:
+                    type: string
+tags:
+    - name: Auth
+    - name: User

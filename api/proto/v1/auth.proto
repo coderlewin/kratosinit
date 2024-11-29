@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package v1.auth;
+
+import "proto/v1/user.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/coderlewin/kratosinit/api/proto/v1;v1";
+option java_multiple_files = true;
+option java_package = "dev.kratos.api.v1";
+option java_outer_classname = "AuthProtoV1";
+
+message AuthLoginDTO {
+  string account = 1;
+  string password = 2;
+}
+
+message AuthLoginVO {
+  string accessToken = 1;
+  string tokenPrefix = 2;
+}
+
+message AuthRegisterDTO {
+  string account = 1;
+  string password = 2;
+  string checkPassword = 3;
+}
+
+message UpdateMineInfoDTO {
+  string nickName = 1;
+  string avatar = 2;
+  string profile = 3;
+}
+
+service Auth {
+  rpc Login (AuthLoginDTO) returns (AuthLoginVO) {
+    option (google.api.http) = {
+      post: "/v1/auth/login",
+      body: "*"
+    };
+  }
+
+  rpc Register (AuthRegisterDTO) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/auth/register",
+      body: "*"
+    };
+  }
+
+  rpc Logout (google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/auth/logout",
+      body: "*"
+    };
+  }
+
+  rpc LoginUserInfo (google.protobuf.Empty) returns (v1.user.UserVO) {
+    option (google.api.http) = {
+      get: "/v1/auth/userInfo"
+    };
+  }
+
+  rpc UpdateMineInfo (UpdateMineInfoDTO) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/auth/update/mine",
+      body: "*"
+    };
+  }
+}
