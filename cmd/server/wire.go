@@ -9,6 +9,7 @@ import (
 	"github.com/coderlewin/kratosinit/internal/biz"
 	"github.com/coderlewin/kratosinit/internal/conf"
 	"github.com/coderlewin/kratosinit/internal/data"
+	"github.com/coderlewin/kratosinit/internal/pkg/auth"
 	"github.com/coderlewin/kratosinit/internal/pkg/middleware"
 	"github.com/coderlewin/kratosinit/internal/server"
 	"github.com/coderlewin/kratosinit/internal/service"
@@ -20,5 +21,15 @@ import (
 
 // wireApp init kratos application.
 func wireApp(*conf.Server, *conf.Data, *conf.Jwt, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, middleware.ProviderSet, newApp))
+	panic(
+		wire.Build(
+			server.ProviderSet,
+			data.ProviderSet,
+			biz.ProviderSet,
+			service.ProviderSet,
+			middleware.ProviderSet,
+			auth.ProviderSet,
+			newApp,
+		),
+	)
 }

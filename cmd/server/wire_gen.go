@@ -11,6 +11,7 @@ import (
 	"github.com/coderlewin/kratosinit/internal/biz/user"
 	"github.com/coderlewin/kratosinit/internal/conf"
 	"github.com/coderlewin/kratosinit/internal/data"
+	"github.com/coderlewin/kratosinit/internal/pkg/auth"
 	"github.com/coderlewin/kratosinit/internal/pkg/middleware"
 	"github.com/coderlewin/kratosinit/internal/server"
 	"github.com/coderlewin/kratosinit/internal/service"
@@ -42,11 +43,12 @@ func wireApp(confServer *conf.Server, confData *conf.Data, jwt *conf.Jwt, logger
 		return nil, nil, err
 	}
 	userRepo := data.NewUserRepo(dataData, logger)
-	userBiz := user.NewBiz(userRepo, logger, jwt)
+	authnInterface := auth.NewAuthnInterface(cmdable, jwt)
+	userBiz := user.NewBiz(userRepo, logger, authnInterface)
 	iBiz := biz.New(userBiz)
 	userService := service.NewUserService(iBiz)
 	authService := service.NewAuthService(iBiz)
-	checkAuthMiddleware := middleware.NewCheckAuthMiddleware(jwt)
+	checkAuthMiddleware := middleware.NewCheckAuthMiddleware(authnInterface)
 	checkRoleMiddleware := middleware.NewCheckRoleMiddleware(userRepo)
 	httpServer := server.NewHTTPServer(confServer, userService, authService, checkAuthMiddleware, checkRoleMiddleware, logger)
 	app := newApp(logger, httpServer)

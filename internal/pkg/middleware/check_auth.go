@@ -3,24 +3,22 @@ package middleware
 import (
 	"context"
 	v1 "github.com/coderlewin/kratosinit/api/proto/v1"
-	"github.com/coderlewin/kratosinit/internal/conf"
-	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/coderlewin/kratosinit/internal/pkg/auth"
+	"github.com/coderlewin/kratosinit/internal/pkg/ctxutils"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport"
-	"github.com/golang-jwt/jwt/v5"
-	"net/http"
 	"slices"
 	"strings"
 )
 
 type CheckAuthMiddleware struct {
-	c         *conf.Jwt
 	whiteList []string
+	authn     auth.AuthnInterface
 }
 
-func NewCheckAuthMiddleware(c *conf.Jwt) *CheckAuthMiddleware {
+func NewCheckAuthMiddleware(authn auth.AuthnInterface) *CheckAuthMiddleware {
 	return &CheckAuthMiddleware{
-		c: c,
+		authn: authn,
 		whiteList: []string{
 			v1.OperationAuthLogin,
 			v1.OperationAuthRegister,
@@ -36,19 +34,12 @@ func (m *CheckAuthMiddleware) Handle(h middleware.Handler) middleware.Handler {
 			return h(ctx, req)
 		}
 		token := m.extractTokenString(tr)
-		mapClaims := jwt.MapClaims{}
-		parse, err := jwt.ParseWithClaims(token, &mapClaims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(m.c.Secret), nil
-		})
-		if err != nil || !parse.Valid {
-			return nil, errors.New(http.StatusUnauthorized, "UNAUTHORIZED", "用户未授权")
+		userId, err := m.authn.Verify(context.Background(), token)
+		if err != nil {
+			return nil, err
 		}
-		userId, ok := mapClaims["userId"]
-		if !ok {
-			return nil, errors.New(http.StatusUnauthorized, "UNAUTHORIZED", "用户未授权")
-		}
-
-		ctx = context.WithValue(ctx, "userId", userId)
+		ctx = ctxutils.NewUserID(ctx, userId)
+		ctx = ctxutils.NewAccessToken(ctx, token)
 		return h(ctx, req)
 	}
 }

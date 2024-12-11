@@ -32,12 +32,16 @@ func (s *AuthService) Register(ctx context.Context, dto *v1.AuthRegisterDTO) (*e
 }
 
 func (s *AuthService) Logout(ctx context.Context, empty *emptypb.Empty) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	accessToken := ctxutils.FromAccessToken(ctx)
+	err := s.bz.User().Logout(ctx, accessToken)
+	if err != nil {
+		return nil, err
+	}
+	return &emptypb.Empty{}, nil
 }
 
 func (s *AuthService) LoginUserInfo(ctx context.Context, empty *emptypb.Empty) (*v1.UserVO, error) {
-	id := ctxutils.MustGetUserId(ctx)
+	id := ctxutils.FromUserID(ctx)
 	user, err := s.bz.User().FindById(ctx, id)
 	if err != nil {
 		return nil, err
@@ -57,7 +61,7 @@ func (s *AuthService) LoginUserInfo(ctx context.Context, empty *emptypb.Empty) (
 }
 
 func (s *AuthService) UpdateMineInfo(ctx context.Context, dto *v1.UpdateMineInfoDTO) (*emptypb.Empty, error) {
-	userId := ctxutils.MustGetUserId(ctx)
+	userId := ctxutils.FromUserID(ctx)
 	err := s.bz.User().Update(ctx, &domain.User{
 		ID:       userId,
 		NickName: dto.GetNickName(),

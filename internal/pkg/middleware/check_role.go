@@ -1,16 +1,16 @@
 package middleware
 
 import (
-  "context"
-  "github.com/coderlewin/kratosinit/api/proto/errcode"
-  "github.com/coderlewin/kratosinit/internal/domain"
-  "slices"
-  "time"
+	"context"
+	"github.com/coderlewin/kratosinit/api/proto/errcode"
+	"github.com/coderlewin/kratosinit/internal/domain"
+	"slices"
+	"time"
 
-  v1 "github.com/coderlewin/kratosinit/api/proto/v1"
-  "github.com/coderlewin/kratosinit/internal/pkg/ctxutils"
-  "github.com/go-kratos/kratos/v2/middleware"
-  "github.com/go-kratos/kratos/v2/transport"
+	v1 "github.com/coderlewin/kratosinit/api/proto/v1"
+	"github.com/coderlewin/kratosinit/internal/pkg/ctxutils"
+	"github.com/go-kratos/kratos/v2/middleware"
+	"github.com/go-kratos/kratos/v2/transport"
 )
 
 type CheckRoleMiddleware struct {
@@ -40,7 +40,7 @@ func (m *CheckRoleMiddleware) Handle(role string) func(h middleware.Handler) mid
 				return h(ctx, req)
 			}
 
-			userId := ctxutils.MustGetUserId(ctx)
+			userId := ctxutils.FromUserID(ctx)
 			// 创建一个带超时的新的 context
 			newCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
